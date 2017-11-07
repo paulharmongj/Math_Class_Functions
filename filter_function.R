@@ -16,11 +16,11 @@ library(readr); library(dplyr)
 test.mat <- read_csv("Fall_16.csv" ) #reads in a tibble
 
 
-M121_filter <- function(dataset = test.mat){
+M121_filter <- function(dataset ){
   
   
   #check for duplicates, and keeps only the non-duplicated observations
-  test.mat.2 <- dplyr::filter(dataset,!duplicated(test.mat) == TRUE)
+  test.mat.2 <- dplyr::filter(dataset,!duplicated(dataset) == TRUE)
   
   #change a couple of variable types
   test.mat.2$SECOND_TIME <- ifelse(is.na(test.mat.2$LAST_GRDE== FALSE),1,0)
@@ -39,9 +39,14 @@ M121_filter <- function(dataset = test.mat){
     
     }else if(!is.na(test.mat.2$SAT_MATHEMATICS[j]) & test.mat.2$SAT_MATHEMATICS[j] >= 540) #SAT
     {filter[j] <- 5
-    }else if(is.na(test.mat.2$STAT_TERM[j]) == FALSE | !is.na(test.mat.2$MATH_CRSE[j]) & test.mat.2$MATH_CRSE[j] == 105 | !is.na(test.mat.2$MSLASUBJ) & test.mat.2$MSLASUBJ=='M') #OTHER (need to add field for Missoula transfer students)
+    }else if(is.na(test.mat.2$STAT_TERM[j]) == FALSE) #OTHER (need to add field for Missoula transfer students)
     { filter[j] <- 6
-    }#ELSE (NOT IN ABOVE CATEGORY)
+    }else if(!is.na(test.mat.2$MATH_CRSE[j]) & test.mat.2$MATH_CRSE[j] == 105) #OTHER (need to add field for Missoula transfer students)
+    { filter[j] <- 6
+    }else if(!is.na(test.mat.2$MSLASUBJ[j])) #OTHER (need to add field for Missoula transfer students)
+    { filter[j] <- 6
+    }
+    #ELSE (NOT IN ABOVE CATEGORY)
     else{filter[j] <- 0
     }
   }
@@ -56,14 +61,4 @@ M121_filter <- function(dataset = test.mat){
 #Some notes: 
 #this function has been checked and validated on a test dataset with MS Excel. (10-18-17)
 
-
-
-
-
-
-
-
-
-
-
-
+M121_filter(s.12)
